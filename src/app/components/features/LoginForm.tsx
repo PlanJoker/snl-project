@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
 // Admin credentials
-const ADMIN_ID = "snl forever";
+const ADMIN_ID = "snl_forever";
 const ADMIN_PW = "snl?snl!123";
 
 // Legacy user (kept for backward compatibility)

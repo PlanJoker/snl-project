@@ -61,7 +61,7 @@ function LeftNav({ className }: { className?: string }) {
 				)}
 			>
 				{/* Logo — 5px lower via mt-[5px] */}
-				<Link href="/" className="mb-16 mt-[5px] flex w-full items-center">
+				<Link href="/" className="mb-16 mt-[15px] flex w-full items-center">
 					<Image
 						src="/snlnewlogo.png"
 						alt="SNL Logo"
