@@ -35,7 +35,7 @@ export default function AdminPage() {
 			<AdminSideNav />
 			<AdminMobileTabBar />
 			<div className="pb-24 md:pb-0 md:ml-64">
-			<div className="px-4 py-6 sm:px-6 sm:py-8">
+			<div className="px-4 pt-20 pb-6 sm:px-6 sm:pt-24 sm:pb-8">
 				{/* Tab nav */}
 				<div className="mb-6 flex gap-1.5 rounded-2xl bg-white p-1.5 shadow-sm dark:bg-[#1e2130] sm:mb-8 sm:gap-2">
 					{([
