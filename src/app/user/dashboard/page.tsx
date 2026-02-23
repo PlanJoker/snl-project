@@ -205,7 +205,7 @@ export default function DashboardPage() {
 	return (
 		<div className="space-y-6 pb-12">
 			{/* ── Welcome banner ── */}
-			<div className="relative overflow-hidden rounded-3xl bg-DEFUALT_BLACK px-8 py-8 text-white">
+			<div className="relative overflow-hidden rounded-3xl bg-DEFUALT_BLACK px-5 py-6 md:px-8 md:py-8 text-white">
 				<div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-BRAND_COLOR opacity-20 blur-3xl" />
 				<p className="text-BRAND_COLOR text-sm font-semibold uppercase tracking-widest mb-1">
 					Saturday Normal Library
@@ -643,7 +643,8 @@ export default function DashboardPage() {
 						</Link>
 					</div>
 				) : (
-					<div className="grid grid-cols-7 gap-1.5">
+					<div className="overflow-x-auto -mx-1 pb-2">
+					<div className="grid grid-cols-7 gap-1.5 min-w-[380px] px-1">
 						{weekDays.map((day, i) => {
 							const isToday = sameDay(day, now);
 							const dayEvents = weeklyEvents.filter((ev) =>
@@ -693,6 +694,7 @@ export default function DashboardPage() {
 							);
 						})}
 					</div>
+				</div>
 				)}
 			</Card>
 
@@ -704,7 +706,8 @@ export default function DashboardPage() {
 
 // ─── My Photos Section ────────────────────────────────────────────────────────
 function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
-	const { addUserPhoto, removeUserPhoto, getUserPhotos } = useUserStore();
+	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser } = useUserStore();
+	const { submitUserPhoto } = useAdminStore();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [caption, setCaption] = useState("");
 	const [preview, setPreview] = useState<string | null>(null);
@@ -727,6 +730,15 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 	const handleUpload = () => {
 		if (!preview || !currentUserId) return;
 		addUserPhoto({ userId: currentUserId, src: preview, caption });
+		// Also submit to admin review queue
+		const user = getCurrentUser();
+		submitUserPhoto({
+			userId: currentUserId,
+			username: user?.username || currentUserId,
+			displayName: user?.displayName || user?.username || currentUserId,
+			src: preview,
+			caption,
+		});
 		setPreview(null);
 		setCaption("");
 		if (fileInputRef.current) fileInputRef.current.value = "";

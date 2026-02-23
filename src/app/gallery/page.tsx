@@ -5,7 +5,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, ChevronLeft, ChevronRight, Images, UserCircle2 } from "lucide-react";
 import { useUserStore } from "@stores/userStore";
-
+import { useAdminStore } from "@stores/adminStore";
 
 // ─── All 37 gallery photos ────────────────────────────────────────────────────
 const GALLERY_PHOTOS = [
@@ -50,10 +50,19 @@ const GALLERY_PHOTOS = [
 
 export default function GalleryPage() {
 	const { userPhotos } = useUserStore();
+	const { galleryPhotos } = useAdminStore();
 
-	const approvedUserPhotos = userPhotos
+	// Approved member photos from adminStore (source=user, visible=true)
+	const approvedFromAdmin = galleryPhotos
+		.filter((p) => p.source === "user" && p.visible)
+		.map((p) => ({ src: p.src, alt: p.caption || "Member photo", isUserPhoto: true }));
+
+	// Fallback: approved user photos from userStore
+	const approvedFromUser = userPhotos
 		.filter((p) => p.status === "approved")
 		.map((p) => ({ src: p.src, alt: p.caption || "Member photo", isUserPhoto: true }));
+
+	const approvedUserPhotos = approvedFromAdmin.length > 0 ? approvedFromAdmin : approvedFromUser;
 
 	const ALL_PHOTOS = [
 		...GALLERY_PHOTOS.map((p) => ({ ...p, isUserPhoto: false })),

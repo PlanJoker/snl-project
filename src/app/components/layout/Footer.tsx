@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Mail, Phone, Clock, MapPin, Send, X } from "lucide-react";
+import { Mail, Clock, MapPin, Send, X, MessageCircle } from "lucide-react";
 
 const Footer: React.FC = () => {
 	const [email, setEmail] = useState("");
@@ -103,11 +103,13 @@ const Footer: React.FC = () => {
 						</li>
 						<li>
 							<a
-								href="tel:+61403557390"
+								href="https://wa.me/61403557390"
+								target="_blank"
+								rel="noopener noreferrer"
 								className="flex items-center gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
 							>
-								<Phone size={16} className="flex-shrink-0 text-BRAND_COLOR" />
-								+61 40 355 7390
+								<MessageCircle size={16} className="flex-shrink-0 text-BRAND_COLOR" />
+								Chat on WhatsApp
 							</a>
 						</li>
 					</ul>
