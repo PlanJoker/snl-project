@@ -89,26 +89,28 @@ const Footer: React.FC = () => {
 						{/* Contact column */}
 						<div className="flex flex-col gap-4 lg:col-span-1">
 							<h3 className="font-bold text-BRAND_COLOR text-sm uppercase tracking-widest">Contact Us</h3>
-						<ul className="flex flex-col gap-5">
-							<li>
-								<a
-									href="mailto:playground.space93@gmail.com"
-										className="flex items-start gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
-									>
-										<Mail size={16} className="mt-0.5 flex-shrink-0 text-BRAND_COLOR" />
-										playground.space93@gmail.com
-									</a>
-								</li>
-								<li>
-									<a
-										href="tel:+61403557390"
-										className="flex items-center gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
-									>
-										<Phone size={16} className="flex-shrink-0 text-BRAND_COLOR" />
-										+61 40 355 7390
-									</a>
-								</li>
-							</ul>
+					<ul className="flex flex-col gap-6">
+						<li>
+							<a
+								href="mailto:playground.space93@gmail.com"
+								className="flex items-start gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
+							>
+								<Mail size={16} className="mt-0.5 flex-shrink-0 text-BRAND_COLOR" />
+								<span className="break-all leading-relaxed">
+									playground.space93<br />@gmail.com
+								</span>
+							</a>
+						</li>
+						<li>
+							<a
+								href="tel:+61403557390"
+								className="flex items-center gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
+							>
+								<Phone size={16} className="flex-shrink-0 text-BRAND_COLOR" />
+								+61 40 355 7390
+							</a>
+						</li>
+					</ul>
 						</div>
 
 						{/* Hours & Location column */}

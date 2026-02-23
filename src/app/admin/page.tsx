@@ -342,22 +342,60 @@ function GalleryTab() {
 	const [editingCaption, setEditingCaption] = useState<string | null>(null);
 	const [captionVal, setCaptionVal] = useState("");
 
-	// Seed gallery from public/gallery if empty
+	// Gallery file map with correct extensions
+	const GALLERY_FILES: { id: string; src: string }[] = [
+		{ id: "photo-01", src: "/gallery/snl-image-1.png" },
+		{ id: "photo-02", src: "/gallery/snl-image-2.jpg" },
+		{ id: "photo-03", src: "/gallery/snl-image-3.jpg" },
+		{ id: "photo-04", src: "/gallery/snl-image-4.jpg" },
+		{ id: "photo-05", src: "/gallery/snl-image-5.webp" },
+		{ id: "photo-06", src: "/gallery/snl-image-6.jpg" },
+		{ id: "photo-07", src: "/gallery/snl-image-7.jpg" },
+		{ id: "photo-08", src: "/gallery/snl-image-8.jpg" },
+		{ id: "photo-09", src: "/gallery/snl-image-9.jpg" },
+		{ id: "photo-10", src: "/gallery/snl-image-10.jpg" },
+		{ id: "photo-11", src: "/gallery/snl-image-11.jpg" },
+		{ id: "photo-12", src: "/gallery/snl-image-12.jpg" },
+		{ id: "photo-13", src: "/gallery/snl-image-13.jpg" },
+		{ id: "photo-14", src: "/gallery/snl-image-14.jpg" },
+		{ id: "photo-15", src: "/gallery/snl-image-15.jpg" },
+		{ id: "photo-16", src: "/gallery/snl-image-16.jpg" },
+		{ id: "photo-17", src: "/gallery/snl-image-17.jpg" },
+		{ id: "photo-18", src: "/gallery/snl-image-18.jpg" },
+		{ id: "photo-19", src: "/gallery/snl-image-19.jpg" },
+		{ id: "photo-20", src: "/gallery/snl-image-20.jpg" },
+		{ id: "photo-21", src: "/gallery/snl-image-21.jpg" },
+		{ id: "photo-22", src: "/gallery/snl-image-22.jpg" },
+		{ id: "photo-23", src: "/gallery/snl-image-23.jpg" },
+		{ id: "photo-24", src: "/gallery/snl-image-24.jpg" },
+		{ id: "photo-25", src: "/gallery/snl-image-25.jpg" },
+		{ id: "photo-26", src: "/gallery/snl-image-26.jpg" },
+		{ id: "photo-27", src: "/gallery/snl-image-27.jpg" },
+		{ id: "photo-28", src: "/gallery/snl-image-28.jpg" },
+		{ id: "photo-29", src: "/gallery/snl-image-29.jpg" },
+		{ id: "photo-30", src: "/gallery/snl-image-30.jpg" },
+		{ id: "photo-31", src: "/gallery/snl-image-31.jpg" },
+		{ id: "photo-32", src: "/gallery/snl-image-32.jpg" },
+		{ id: "photo-33", src: "/gallery/snl-image-33.jpg" },
+		{ id: "photo-34", src: "/gallery/snl-image-34.jpg" },
+		{ id: "photo-35", src: "/gallery/snl-image-35.jpg" },
+		{ id: "photo-36", src: "/gallery/snl-image-36.jpg" },
+		{ id: "photo-37", src: "/gallery/snl-image-37.jpg" },
+	];
+
+	// Always re-seed gallery with correct paths on mount
 	useEffect(() => {
-		if (galleryPhotos.length === 0) {
-			const files = Array.from({ length: 37 }, (_, i) => {
-				const n = String(i + 1).padStart(2, "0");
-				return {
-					id: `photo-${n}`,
-					src: `/gallery/snl${n}.jpg`,
-					caption: "",
-					visible: true,
-					uploadedAt: new Date().toISOString(),
-				};
-			});
+		const needsInit = galleryPhotos.length === 0 || !galleryPhotos[0]?.src?.includes("snl-image");
+		if (needsInit) {
+			const files = GALLERY_FILES.map((f) => ({
+				...f,
+				caption: "",
+				visible: true,
+				uploadedAt: new Date().toISOString(),
+			}));
 			initGallery(files);
 		}
-	}, [galleryPhotos.length, initGallery]);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const openCaption = (id: string, current: string) => {
 		setEditingCaption(id);
