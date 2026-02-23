@@ -1,3 +1,98 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Light / Dark mode CSS variables ── */
+:root {
+  --bg-primary: #F8F8FF;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #012E2B;
+  --text-secondary: #4b5563;
+  --border-color: #e5e7eb;
+  --nav-bg: #F8F8FF;
+  --nav-shadow: rgba(0,0,0,0.08);
+}
+
+.dark {
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1d27;
+  --bg-card: #1e2130;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: #2d3148;
+  --nav-bg: #1a1d27;
+  --nav-shadow: rgba(0,0,0,0.4);
+}
+
+/* Apply CSS variables to base elements */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode overrides for common utility classes */
+.dark .bg-\[#F8F8FF\] {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark .bg-DEFUALT_WHITE {
+  background-color: var(--bg-card) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark .bg-white {
+  background-color: var(--bg-card) !important;
+}
+
+.dark .bg-white\/40 {
+  background-color: rgba(30, 33, 48, 0.6) !important;
+}
+
+.dark .text-gray-700 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-400 {
+  color: #64748b !important;
+}
+
+.dark .border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4) !important;
+}
+
+/* Sidebar dark mode */
+.dark .sidebar-nav {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color);
+}
+
+/* Card dark mode */
+.dark .rounded-2xl.bg-white,
+.dark .rounded-xl.bg-white {
+  background-color: var(--bg-card) !important;
+}
+
+/* Input dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Smooth transitions for all elements */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: ease;
+  transition-duration: 200ms;
+}

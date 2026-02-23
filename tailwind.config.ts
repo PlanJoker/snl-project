@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,7 +11,7 @@ export default {
     extend: {
       colors: {
         DEFUALT_WHITE: '#F8F8FF',
-        DEFUALT_BLACK: '#012E2B', 
+        DEFUALT_BLACK: '#012E2B',
         BRAND_COLOR: '#FFDC73'
       },
       gridTemplateColumns: {
