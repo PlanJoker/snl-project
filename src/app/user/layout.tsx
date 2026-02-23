@@ -34,11 +34,11 @@ function LeftNav({ className }: { className?: string }) {
 			{/* Logo */}
 			<Link href="/" className="mb-16 flex w-full items-center">
 				<Image
-					src="/logo01.svg"
-					alt="Logo"
+					src="/snlnewlogo.png"
+					alt="SNL Logo"
 					width={72}
 					height={72}
-					className="p-1"
+					className="object-contain"
 				/>
 			</Link>
 

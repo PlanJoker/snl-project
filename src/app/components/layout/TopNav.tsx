@@ -61,13 +61,11 @@ export default function TopNav() {
 			{/* Logo on the left */}
 			<Link href="/" className="ml-2 flex items-center">
 				<Image
-					src="/logo06.svg"
-					alt="Logo"
-					// width={300}
-					// height={48}
-					width={128}
-					height={128}
-					// className="absolute top-4"
+					src="/snlnewlogo.png"
+					alt="SNL Logo"
+					width={56}
+					height={56}
+					className="object-contain"
 				/>
 			</Link>
 

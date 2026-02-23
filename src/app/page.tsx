@@ -5,7 +5,6 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import TestimonialCarousel from "@components/TestimonialCarousel";
 import Footer from "@components/layout/Footer";
-import InfiniteSlider from "./components/InfiniteSlider";
 import { Rock_Salt } from "next/font/google";
 import { BookOpen, Calendar, Calculator, Users } from "lucide-react";
 
@@ -14,17 +13,6 @@ const rockSalt = Rock_Salt({
 	style: "normal",
 	subsets: ["latin"],
 });
-
-const sliderItems = [
-	{ id: 1, src: "/images/snl_meeting1.png", alt: "SNL Meeting 1" },
-	{ id: 2, src: "/images/snl_meeting2.png", alt: "SNL Meeting 2" },
-	{ id: 3, src: "/images/snl_meeting3.png", alt: "SNL Meeting 3" },
-	{ id: 4, src: "/images/snl_meeting4.png", alt: "SNL Meeting 4" },
-	{ id: 5, src: "/images/snl_meeting1.png", alt: "SNL Meeting 1" },
-	{ id: 6, src: "/images/snl_meeting2.png", alt: "SNL Meeting 2" },
-	{ id: 7, src: "/images/snl_meeting3.png", alt: "SNL Meeting 3" },
-	{ id: 8, src: "/images/snl_meeting4.png", alt: "SNL Meeting 4" },
-];
 
 function AnimatedSection({ children, className }: { children: React.ReactNode; className?: string }) {
 	const ref = useRef(null);
@@ -103,9 +91,7 @@ export default function Home() {
 						</div>
 					</AnimatedSection>
 				</div>
-				<div className="mt-12 w-full">
-					<InfiniteSlider items={sliderItems} width={300} height={180} duration={50} reverse={false} gap={-26} useMask={false} />
-				</div>
+	
 				<AnimatedSection className="mt-8 w-full max-w-6xl mx-auto">
 					<h2 className="font-bold text-5xl text-black md:text-7xl">fight procrastination</h2>
 				</AnimatedSection>
