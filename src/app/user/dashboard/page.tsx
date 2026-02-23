@@ -698,14 +698,22 @@ export default function DashboardPage() {
 									</p>
 									<div className="mt-1 space-y-1">
 										{dayEvents.slice(0, 3).map((ev) => (
-											<div
-												key={ev.resource?.id ?? ev.title}
-												className="rounded-lg bg-BRAND_COLOR/20 px-1.5 py-0.5"
-											>
-												<p className="truncate text-[9px] font-semibold text-DEFUALT_BLACK dark:text-BRAND_COLOR">
-													{ev.title}
-												</p>
-											</div>
+						<div
+							key={ev.resource?.id ?? ev.title}
+							className={`rounded-lg px-1.5 py-0.5 ${
+								isToday
+									? "bg-white/90"
+									: "bg-BRAND_COLOR/20"
+							}`}
+						>
+							<p className={`truncate text-[9px] font-semibold ${
+								isToday
+									? "text-gray-900"
+									: "text-DEFUALT_BLACK dark:text-BRAND_COLOR"
+							}`}>
+								{ev.title}
+							</p>
+						</div>
 										))}
 										{dayEvents.length > 3 && (
 											<p className="text-center text-[9px] text-gray-400">
@@ -729,14 +737,15 @@ export default function DashboardPage() {
 
 // ─── My Photos Section ────────────────────────────────────────────────────────
 function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
-	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser, updatePhotoStatus, markPhotoSubmitted } = useUserStore();
+	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser, updatePhotoStatus, markPhotoSubmitted, userPhotos, currentUserId: storeUserId } = useUserStore();
 	const { submitUserPhoto } = useAdminStore();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [caption, setCaption] = useState("");
 	const [preview, setPreview] = useState<string | null>(null);
 	const [lightbox, setLightbox] = useState<string | null>(null);
 
-	const myPhotos = getUserPhotos();
+	// Directly subscribe to userPhotos for reactive re-render on submitted state change
+	const myPhotos = userPhotos.filter((p) => p.userId === (currentUserId ?? storeUserId));
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
