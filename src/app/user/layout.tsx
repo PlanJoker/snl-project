@@ -1,4 +1,5 @@
 "use client";
+import SeedTesterData from "@components/features/SeedTesterData";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,6 +24,7 @@ export default function UserLayout({
 }: { children: React.ReactNode }) {
 	return (
 		<div className="h-full w-full">
+			<SeedTesterData />
 			<LeftNav className="w-56" />
 			<main className="my-8 mr-8 ml-64 dark:text-slate-100">{children}</main>
 		</div>

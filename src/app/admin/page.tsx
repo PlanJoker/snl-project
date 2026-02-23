@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@stores/authStore";
 import { useAdminStore, type Announcement, type Session } from "@stores/adminStore";
+import { useUserStore } from "@stores/userStore";
 import {
 	Megaphone, CalendarDays, Images, Plus, Trash2, Edit3,
 	Pin, PinOff, Eye, EyeOff, LogOut, Shield, X, Check, ChevronRight,
+	Users, CheckCircle2, XCircle, Clock3,
 } from "lucide-react";
 import Image from "next/image";
 
-type Tab = "announcements" | "sessions" | "gallery";
+type Tab = "announcements" | "sessions" | "gallery" | "user-photos";
 
 export default function AdminPage() {
 	const { isLoggedIn, isAdmin, logout } = useAuthStore();
@@ -76,6 +78,7 @@ export default function AdminPage() {
 				{tab === "announcements" && <AnnouncementsTab />}
 				{tab === "sessions" && <SessionsTab />}
 				{tab === "gallery" && <GalleryTab />}
+			{tab === "user-photos" && <UserPhotosTab />}
 			</div>
 		</div>
 	);
@@ -468,6 +471,132 @@ function GalleryTab() {
 					</div>
 				))}
 			</div>
+		</div>
+	);
+}
+
+// ─── User Photos Review Tab ───────────────────────────────────────────────────
+function UserPhotosTab() {
+	const { userPhotos, updatePhotoStatus, users } = useUserStore();
+	const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("pending");
+
+	const filtered = userPhotos.filter((p) => filter === "all" ? true : p.status === filter);
+	const pendingCount = userPhotos.filter((p) => p.status === "pending").length;
+
+	const getUserName = (userId: string) => {
+		const user = users.find((u) => u.id === userId);
+		return user ? (user.displayName || user.username) : "Unknown User";
+	};
+
+	return (
+		<div className="space-y-4">
+			<div className="flex items-center justify-between">
+				<div>
+					<h2 className="font-bold text-gray-900 text-xl dark:text-white">User Photo Review</h2>
+					<p className="text-gray-400 text-sm mt-0.5">
+						Approve or reject user-submitted photos for the Global Gallery.
+					</p>
+				</div>
+				{pendingCount > 0 && (
+					<span className="rounded-full bg-yellow-100 px-3 py-1.5 font-bold text-yellow-700 text-sm dark:bg-yellow-900/30 dark:text-yellow-400">
+						{pendingCount} pending
+					</span>
+				)}
+			</div>
+
+			{/* Filter tabs */}
+			<div className="flex gap-2 rounded-2xl bg-white p-1.5 shadow-sm dark:bg-[#1e2130]">
+				{(["all", "pending", "approved", "rejected"] as const).map((f) => (
+					<button
+						key={f}
+						type="button"
+						onClick={() => setFilter(f)}
+						className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 font-semibold text-sm transition capitalize ${
+							filter === f
+								? "bg-DEFUALT_BLACK text-BRAND_COLOR shadow"
+								: "text-gray-500 hover:text-gray-800 dark:text-slate-400 dark:hover:text-white"
+						}`}
+					>
+						{f === "pending" && <Clock3 size={13} />}
+						{f === "approved" && <CheckCircle2 size={13} />}
+						{f === "rejected" && <XCircle size={13} />}
+						{f} {f !== "all" && `(${userPhotos.filter(p => p.status === f).length})`}
+					</button>
+				))}
+			</div>
+
+			{filtered.length === 0 ? (
+				<div className="rounded-2xl bg-gray-50 p-12 text-center dark:bg-[#1e2130]">
+					<Users size={32} className="mx-auto mb-3 text-gray-300 dark:text-slate-600" />
+					<p className="text-gray-400 text-sm">No {filter === "all" ? "" : filter} photos.</p>
+				</div>
+			) : (
+				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+					{filtered.map((photo) => (
+						<div key={photo.id} className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-slate-700 dark:bg-[#1e2130]">
+							{/* Photo */}
+							<div className="relative aspect-square bg-gray-100 dark:bg-slate-800">
+								<Image
+									src={photo.src}
+									alt={photo.caption || "User photo"}
+									fill
+									className="object-cover"
+									sizes="200px"
+								/>
+								{/* Status badge overlay */}
+								<div className="absolute top-2 left-2">
+									{photo.status === "approved" && (
+										<span className="flex items-center gap-1 rounded-full bg-green-500 px-2 py-0.5 text-white text-[10px] font-bold shadow">
+											<CheckCircle2 size={9} /> Approved
+										</span>
+									)}
+									{photo.status === "rejected" && (
+										<span className="flex items-center gap-1 rounded-full bg-red-500 px-2 py-0.5 text-white text-[10px] font-bold shadow">
+											<XCircle size={9} /> Rejected
+										</span>
+									)}
+									{photo.status === "pending" && (
+										<span className="flex items-center gap-1 rounded-full bg-yellow-400 px-2 py-0.5 text-yellow-900 text-[10px] font-bold shadow">
+											<Clock3 size={9} /> Pending
+										</span>
+									)}
+								</div>
+							</div>
+							{/* Info */}
+							<div className="p-3">
+								<p className="font-semibold text-xs text-gray-700 dark:text-slate-300 truncate">
+									{getUserName(photo.userId)}
+								</p>
+								{photo.caption && (
+									<p className="text-[11px] text-gray-500 dark:text-slate-400 truncate mt-0.5">{photo.caption}</p>
+								)}
+								<p className="text-[10px] text-gray-400 dark:text-slate-500 mt-0.5">
+									{new Date(photo.uploadedAt).toLocaleDateString()}
+								</p>
+								{/* Action buttons */}
+								<div className="mt-2 flex gap-1.5">
+									<button
+										type="button"
+										onClick={() => updatePhotoStatus(photo.id, "approved")}
+										disabled={photo.status === "approved"}
+										className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-50 py-1.5 text-green-700 text-xs font-semibold transition hover:bg-green-100 disabled:opacity-40 dark:bg-green-900/20 dark:text-green-400"
+									>
+										<Check size={11} /> Approve
+									</button>
+									<button
+										type="button"
+										onClick={() => updatePhotoStatus(photo.id, "rejected")}
+										disabled={photo.status === "rejected"}
+										className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-red-50 py-1.5 text-red-600 text-xs font-semibold transition hover:bg-red-100 disabled:opacity-40 dark:bg-red-900/20 dark:text-red-400"
+									>
+										<X size={11} /> Reject
+									</button>
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }

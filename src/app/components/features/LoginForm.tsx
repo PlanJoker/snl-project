@@ -4,10 +4,32 @@ import { useAuthStore } from "@stores/authStore";
 import { useUserStore } from "@stores/userStore";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { Eye, EyeOff, UserPlus, LogIn } from "lucide-react";
+import { Eye, EyeOff, UserPlus, LogIn, ChevronDown } from "lucide-react";
 
 const ADMIN_ID = "snl_forever";
 const ADMIN_PW = "snl?snl!123";
+
+// Melbourne / Victoria universities list (image provided by user)
+const UNIVERSITY_OPTIONS = [
+	"Deakin University",
+	"La Trobe University",
+	"Monash University",
+	"RMIT University",
+	"Swinburne University of Technology",
+	"University of Divinity",
+	"University of Melbourne",
+	"Victoria University",
+	"Australian Catholic University",
+	"Charles Darwin University",
+	"CQUniversity",
+	"Federation University Australia",
+	"James Cook University",
+	"Southern Cross University",
+	"University of New South Wales",
+	"University of Queensland",
+	"University of Sydney",
+	"Others",
+] as const;
 
 type Tab = "login" | "signup";
 
@@ -27,7 +49,8 @@ export default function LoginForm() {
 	const [signupUsername, setSignupUsername] = useState("");
 	const [signupEmail, setSignupEmail] = useState("");
 	const [signupDisplayName, setSignupDisplayName] = useState("");
-	const [signupUniversity, setSignupUniversity] = useState("");
+	const [signupUniversitySelect, setSignupUniversitySelect] = useState("");
+	const [signupUniversityCustom, setSignupUniversityCustom] = useState("");
 	const [signupMajor, setSignupMajor] = useState("");
 	const [signupPw, setSignupPw] = useState("");
 	const [signupPwConfirm, setSignupPwConfirm] = useState("");
@@ -74,11 +97,17 @@ export default function LoginForm() {
 			return;
 		}
 
+		// Resolve final university value
+		const finalUniversity =
+			signupUniversitySelect === "Others"
+				? signupUniversityCustom.trim()
+				: signupUniversitySelect;
+
 		const result = register({
 			username: signupUsername.trim(),
 			email: signupEmail.trim(),
 			displayName: signupDisplayName.trim() || signupUsername.trim(),
-			university: signupUniversity.trim(),
+			university: finalUniversity,
 			major: signupMajor.trim(),
 			password: signupPw,
 		});
@@ -95,6 +124,9 @@ export default function LoginForm() {
 
 	const inputClass =
 		"w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-BRAND_COLOR focus:ring-2 focus:ring-BRAND_COLOR/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-BRAND_COLOR";
+
+	const selectClass =
+		"w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-BRAND_COLOR focus:ring-2 focus:ring-BRAND_COLOR/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-BRAND_COLOR appearance-none cursor-pointer";
 
 	return (
 		<div className="w-full">
@@ -235,32 +267,65 @@ export default function LoginForm() {
 							className={inputClass}
 						/>
 					</div>
-					<div className="grid grid-cols-2 gap-3">
-						<div>
-							<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
-								University
-							</label>
-							<input
-								type="text"
-								value={signupUniversity}
-								onChange={(e) => setSignupUniversity(e.target.value)}
-								placeholder="e.g. UniMelb"
-								className={inputClass}
-							/>
-						</div>
-						<div>
-							<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
-								Major
-							</label>
-							<input
-								type="text"
-								value={signupMajor}
-								onChange={(e) => setSignupMajor(e.target.value)}
-								placeholder="e.g. CS"
-								className={inputClass}
+
+					{/* University dropdown */}
+					<div>
+						<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
+							University
+						</label>
+						<div className="relative">
+							<select
+								value={signupUniversitySelect}
+								onChange={(e) => {
+									setSignupUniversitySelect(e.target.value);
+									if (e.target.value !== "Others") setSignupUniversityCustom("");
+								}}
+								className={selectClass}
+							>
+								<option value="">— Select your university —</option>
+								{UNIVERSITY_OPTIONS.map((uni) => (
+									<option key={uni} value={uni}>
+										{uni}
+									</option>
+								))}
+							</select>
+							<ChevronDown
+								size={16}
+								className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
 							/>
 						</div>
 					</div>
+
+					{/* Custom university input — shown only when "Others" is selected */}
+					{signupUniversitySelect === "Others" && (
+						<div>
+							<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
+								University Name <span className="text-red-400">*</span>
+							</label>
+							<input
+								type="text"
+								value={signupUniversityCustom}
+								onChange={(e) => setSignupUniversityCustom(e.target.value)}
+								placeholder="Enter your university name"
+								required
+								className={inputClass}
+							/>
+						</div>
+					)}
+
+					<div>
+						<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
+							Major
+						</label>
+						<input
+							type="text"
+							value={signupMajor}
+							onChange={(e) => setSignupMajor(e.target.value)}
+							placeholder="e.g. Computer Science"
+							className={inputClass}
+						/>
+					</div>
+
 					<div>
 						<label className="mb-1.5 block font-medium text-sm dark:text-slate-200">
 							Password <span className="text-red-400">*</span>

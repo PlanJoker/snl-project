@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Images, UserCircle2 } from "lucide-react";
+import { useUserStore } from "@stores/userStore";
 
 
 // ─── All 37 gallery photos ────────────────────────────────────────────────────
@@ -48,24 +49,29 @@ const GALLERY_PHOTOS = [
 ];
 
 export default function GalleryPage() {
-	const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+	const { userPhotos } = useUserStore();
 
+	const approvedUserPhotos = userPhotos
+		.filter((p) => p.status === "approved")
+		.map((p) => ({ src: p.src, alt: p.caption || "Member photo", isUserPhoto: true }));
+
+	const ALL_PHOTOS = [
+		...GALLERY_PHOTOS.map((p) => ({ ...p, isUserPhoto: false })),
+		...approvedUserPhotos,
+	];
+
+	const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 	const openLightbox = useCallback((idx: number) => setLightboxIndex(idx), []);
 	const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
 	const goPrev = useCallback(() => {
-		setLightboxIndex((i) =>
-			i === null ? null : (i - 1 + GALLERY_PHOTOS.length) % GALLERY_PHOTOS.length
-		);
-	}, []);
+		setLightboxIndex((i) => i === null ? null : (i - 1 + ALL_PHOTOS.length) % ALL_PHOTOS.length);
+	}, [ALL_PHOTOS.length]);
 
 	const goNext = useCallback(() => {
-		setLightboxIndex((i) =>
-			i === null ? null : (i + 1) % GALLERY_PHOTOS.length
-		);
-	}, []);
+		setLightboxIndex((i) => i === null ? null : (i + 1) % ALL_PHOTOS.length);
+	}, [ALL_PHOTOS.length]);
 
-	// Keyboard navigation
 	const handleKeyDown = useCallback(
 		(e: React.KeyboardEvent) => {
 			if (lightboxIndex === null) return;
@@ -75,6 +81,8 @@ export default function GalleryPage() {
 		},
 		[lightboxIndex, goPrev, goNext, closeLightbox]
 	);
+
+	const currentPhoto = lightboxIndex !== null ? ALL_PHOTOS[lightboxIndex] : null;
 
 	return (
 	<div
@@ -102,7 +110,7 @@ export default function GalleryPage() {
 						</p>
 					</div>
 					<div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-sm">
-						<span className="font-black text-3xl text-BRAND_COLOR">{GALLERY_PHOTOS.length}</span>
+						<span className="font-black text-3xl text-BRAND_COLOR">{ALL_PHOTOS.length}</span>
 						<span className="text-gray-400 text-sm leading-tight">photos<br />captured</span>
 					</div>
 				</div>
@@ -112,7 +120,7 @@ export default function GalleryPage() {
 			{/* ── Masonry Grid ── */}
 			<main className="mx-auto max-w-7xl px-4 py-12 md:px-8">
 				<div className="columns-2 gap-3 md:columns-3 lg:columns-4">
-					{GALLERY_PHOTOS.map((photo, idx) => (
+					{ALL_PHOTOS.map((photo, idx) => (
 						<motion.div
 							key={photo.src}
 							initial={{ opacity: 0, y: 20 }}

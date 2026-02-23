@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
 	BarChart,
 	Bar,
@@ -27,6 +28,12 @@ import {
 	Edit3,
 	Check,
 	X,
+	Camera,
+	Upload,
+	Globe,
+	Clock3,
+	CheckCircle2,
+	XCircle,
 } from "lucide-react";
 import { useAuthStore } from "@stores/authStore";
 import { useUserStore } from "@stores/userStore";
@@ -100,7 +107,7 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function DashboardPage() {
 	const router = useRouter();
-	const { isLoggedIn, isAdmin } = useAuthStore();
+	const { isLoggedIn, isAdmin, userId } = useAuthStore();
 	const { getCurrentUser, getGoals, addGoal, updateGoal, removeGoal } = useUserStore();
 	const { announcements, sessions } = useAdminStore();
 	const { semesters, calculateSemesterGPA, calculateSubjectGrade } = useWAMStore();
@@ -688,6 +695,179 @@ export default function DashboardPage() {
 					</div>
 				)}
 			</Card>
+
+			{/* ── My Photos ── */}
+			{!isAdmin && <MyPhotosSection currentUserId={userId} />}
 		</div>
+	);
+}
+
+// ─── My Photos Section ────────────────────────────────────────────────────────
+function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
+	const { addUserPhoto, removeUserPhoto, getUserPhotos } = useUserStore();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [caption, setCaption] = useState("");
+	const [preview, setPreview] = useState<string | null>(null);
+	const [lightbox, setLightbox] = useState<string | null>(null);
+
+	const myPhotos = getUserPhotos();
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		if (file.size > 5 * 1024 * 1024) {
+			alert("File size must be under 5MB.");
+			return;
+		}
+		const reader = new FileReader();
+		reader.onload = (ev) => setPreview(ev.target?.result as string);
+		reader.readAsDataURL(file);
+	};
+
+	const handleUpload = () => {
+		if (!preview || !currentUserId) return;
+		addUserPhoto({ userId: currentUserId, src: preview, caption });
+		setPreview(null);
+		setCaption("");
+		if (fileInputRef.current) fileInputRef.current.value = "";
+	};
+
+	const statusBadge = (status: string) => {
+		if (status === "approved") return (
+			<span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-green-700 text-[10px] font-bold dark:bg-green-900/30 dark:text-green-400">
+				<CheckCircle2 size={10} /> Approved
+			</span>
+		);
+		if (status === "rejected") return (
+			<span className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-600 text-[10px] font-bold dark:bg-red-900/30 dark:text-red-400">
+				<XCircle size={10} /> Rejected
+			</span>
+		);
+		return (
+			<span className="flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-700 text-[10px] font-bold dark:bg-yellow-900/30 dark:text-yellow-400">
+				<Clock3 size={10} /> Pending Review
+			</span>
+		);
+	};
+
+	return (
+		<>
+		<Card>
+			<div className="mb-4 flex items-center justify-between">
+				<div className="flex items-center gap-2">
+					<span className="text-BRAND_COLOR"><Camera size={20} /></span>
+					<h2 className="font-bold text-lg dark:text-slate-100">My Photos</h2>
+				</div>
+				<span className="rounded-full bg-gray-100 px-3 py-1 text-gray-500 text-xs dark:bg-slate-800 dark:text-slate-400">
+					{myPhotos.length} photo{myPhotos.length !== 1 ? "s" : ""}
+				</span>
+			</div>
+
+			{/* Upload area */}
+			<div className="mb-5 rounded-2xl border-2 border-dashed border-gray-200 p-4 dark:border-slate-700">
+				<p className="mb-3 font-semibold text-sm text-gray-600 dark:text-slate-300">Upload a new photo</p>
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+					<div className="flex-1 space-y-2">
+						<input
+							ref={fileInputRef}
+							type="file"
+							accept="image/*"
+							onChange={handleFileChange}
+							className="block w-full text-sm text-gray-500 file:mr-3 file:rounded-xl file:border-0 file:bg-DEFUALT_BLACK file:px-4 file:py-2 file:text-BRAND_COLOR file:font-semibold file:text-xs hover:file:opacity-80 dark:text-slate-400"
+						/>
+						<input
+							type="text"
+							value={caption}
+							onChange={(e) => setCaption(e.target.value)}
+							placeholder="Add a caption (optional)"
+							className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-BRAND_COLOR focus:ring-2 focus:ring-BRAND_COLOR/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+						/>
+					</div>
+					{preview && (
+						<div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 dark:border-slate-700">
+							<Image src={preview} alt="preview" fill className="object-cover" sizes="80px" />
+						</div>
+					)}
+					<button
+						type="button"
+						onClick={handleUpload}
+						disabled={!preview}
+						className="flex items-center gap-2 rounded-xl bg-DEFUALT_BLACK px-5 py-2.5 font-semibold text-BRAND_COLOR text-sm transition hover:opacity-80 disabled:opacity-40"
+					>
+						<Upload size={15} />
+						Upload
+					</button>
+				</div>
+			</div>
+
+			{/* Photo grid */}
+			{myPhotos.length === 0 ? (
+				<div className="rounded-2xl bg-gray-50 p-8 text-center dark:bg-slate-800">
+					<Camera size={32} className="mx-auto mb-2 text-gray-300 dark:text-slate-600" />
+					<p className="text-gray-400 text-sm">No photos yet. Upload your first photo!</p>
+				</div>
+			) : (
+				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+					{myPhotos.map((photo) => (
+						<div key={photo.id} className="group relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-slate-800">
+							<button
+								type="button"
+								onClick={() => setLightbox(photo.src)}
+								className="relative block aspect-square w-full overflow-hidden"
+							>
+								<Image src={photo.src} alt={photo.caption || "My photo"} fill className="object-cover transition-transform duration-300 group-hover:scale-105" sizes="200px" />
+							</button>
+							<div className="p-2">
+								<div className="flex items-center justify-between gap-1">
+									{statusBadge(photo.status)}
+									<button
+										type="button"
+										onClick={() => removeUserPhoto(photo.id)}
+										className="rounded-lg p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+										title="Delete photo"
+									>
+										<Trash2 size={12} />
+									</button>
+								</div>
+								{photo.caption && (
+									<p className="mt-1 truncate text-[11px] text-gray-500 dark:text-slate-400">{photo.caption}</p>
+								)}
+								<p className="text-[10px] text-gray-400 dark:text-slate-500">
+									{new Date(photo.uploadedAt).toLocaleDateString()}
+								</p>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+
+			{/* Info note */}
+			<div className="mt-4 flex items-start gap-2 rounded-xl bg-blue-50 p-3 dark:bg-blue-900/10">
+				<Globe size={14} className="mt-0.5 flex-shrink-0 text-blue-500" />
+				<p className="text-blue-700 text-xs dark:text-blue-400">
+					Uploaded photos are submitted for admin review. Once approved, they will appear in the Global Gallery.
+				</p>
+			</div>
+		</Card>
+
+		{/* Lightbox */}
+		{lightbox && (
+			<div
+				className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+				onClick={() => setLightbox(null)}
+			>
+				<button
+					type="button"
+					onClick={() => setLightbox(null)}
+					className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+				>
+					<X size={20} />
+				</button>
+				<div className="relative max-h-[85vh] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+					<Image src={lightbox} alt="Photo" width={1200} height={900} className="max-h-[85vh] w-auto rounded-2xl object-contain" />
+				</div>
+			</div>
+		)}
+		</>
 	);
 }
