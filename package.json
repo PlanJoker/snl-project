@@ -26,6 +26,7 @@
 		"react-big-calendar": "^1.18.0",
 		"react-dom": "^19.2.4",
 		"recharts": "^2.15.2",
+		"rrule": "^2.8.1",
 		"styled-components": "^6.1.19",
 		"uuid": "^11.1.0",
 		"zustand": "^5.0.3"

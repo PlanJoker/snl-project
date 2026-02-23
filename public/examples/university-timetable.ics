@@ -1,0 +1,121 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//SNL Example//University Timetable//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:SNL University Timetable (Example)
+X-WR-TIMEZONE:Australia/Melbourne
+
+BEGIN:VEVENT
+UID:cs101-lecture-weekly@snl.example
+SUMMARY:CS101 - Introduction to Computer Science (Lecture)
+DTSTART:20260223T090000
+DTEND:20260223T103000
+RRULE:FREQ=WEEKLY;BYDAY=MO;UNTIL=20260525
+LOCATION:Lecture Hall A, Engineering Building
+DESCRIPTION:Weekly CS101 lecture. Bring your laptop and textbook.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:cs101-tutorial-weekly@snl.example
+SUMMARY:CS101 - Tutorial
+DTSTART:20260225T140000
+DTEND:20260225T150000
+RRULE:FREQ=WEEKLY;BYDAY=WE;UNTIL=20260525
+LOCATION:Room 203, Science Building
+DESCRIPTION:Weekly CS101 tutorial session. Assignments due before class.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:econ201-lecture-weekly@snl.example
+SUMMARY:ECON201 - Microeconomics (Lecture)
+DTSTART:20260224T110000
+DTEND:20260224T123000
+RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20260525
+LOCATION:Economics Building, Room 101
+DESCRIPTION:Microeconomics lecture - Tuesday and Thursday.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:math301-lecture-weekly@snl.example
+SUMMARY:MATH301 - Linear Algebra (Lecture)
+DTSTART:20260226T100000
+DTEND:20260226T113000
+RRULE:FREQ=WEEKLY;BYDAY=TH;UNTIL=20260525
+LOCATION:Mathematics Building, Lecture Theatre 2
+DESCRIPTION:Linear Algebra weekly lecture.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:snl-weekly-session@snl.example
+SUMMARY:SNL Weekly Study Session
+DTSTART:20260228T100000
+DTEND:20260228T140000
+RRULE:FREQ=WEEKLY;BYDAY=SA;UNTIL=20260525
+LOCATION:Melbourne CBD Library, Level 3
+DESCRIPTION:SNL Saturday study session. Open to all members!\nBring your study materials and goals for the week.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:cs101-assignment1@snl.example
+SUMMARY:CS101 - Assignment 1 Due
+DTSTART;VALUE=DATE:20260313
+DTEND;VALUE=DATE:20260314
+DESCRIPTION:CS101 Assignment 1 submission deadline. Submit via LMS by 11:59 PM.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:cs101-assignment2@snl.example
+SUMMARY:CS101 - Assignment 2 Due
+DTSTART;VALUE=DATE:20260403
+DTEND;VALUE=DATE:20260404
+DESCRIPTION:CS101 Assignment 2 submission deadline.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:econ201-midterm@snl.example
+SUMMARY:ECON201 - Midterm Exam
+DTSTART:20260407T130000
+DTEND:20260407T150000
+LOCATION:Examination Hall, Building C
+DESCRIPTION:ECON201 Midterm Examination. Closed book. Bring student ID.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:math301-quiz-biweekly@snl.example
+SUMMARY:MATH301 - Weekly Quiz
+DTSTART:20260226T113000
+DTEND:20260226T120000
+RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TH;UNTIL=20260525
+LOCATION:Mathematics Building, Lecture Theatre 2
+DESCRIPTION:Bi-weekly MATH301 quiz (every other Thursday after lecture).
+END:VEVENT
+
+BEGIN:VEVENT
+UID:cs101-final-exam@snl.example
+SUMMARY:CS101 - Final Exam
+DTSTART:20260518T090000
+DTEND:20260518T120000
+LOCATION:Main Examination Centre, Hall 1
+DESCRIPTION:CS101 Final Examination. Open book allowed. Bring calculator.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:econ201-final-exam@snl.example
+SUMMARY:ECON201 - Final Exam
+DTSTART:20260520T140000
+DTEND:20260520T170000
+LOCATION:Main Examination Centre, Hall 2
+DESCRIPTION:ECON201 Final Examination. Closed book.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:snl-networking-event@snl.example
+SUMMARY:SNL Networking Night
+DTSTART:20260327T180000
+DTEND:20260327T210000
+LOCATION:The Precinct, Melbourne CBD
+DESCRIPTION:SNL Networking Night - connect with professionals and fellow students!\nDress code: Smart casual.
+END:VEVENT
+
+END:VCALENDAR
