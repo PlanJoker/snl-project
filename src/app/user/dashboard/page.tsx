@@ -729,7 +729,7 @@ export default function DashboardPage() {
 
 // ─── My Photos Section ────────────────────────────────────────────────────────
 function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
-	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser, updatePhotoStatus } = useUserStore();
+	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser, updatePhotoStatus, markPhotoSubmitted } = useUserStore();
 	const { submitUserPhoto } = useAdminStore();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [caption, setCaption] = useState("");
@@ -753,18 +753,22 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 	const handleUpload = () => {
 		if (!preview || !currentUserId) return;
 		addUserPhoto({ userId: currentUserId, src: preview, caption });
-		// Also submit to admin review queue
+		setPreview(null);
+		setCaption("");
+		if (fileInputRef.current) fileInputRef.current.value = "";
+	};
+
+	const handleSubmitToGallery = (photo: { id: string; submitted?: boolean; src: string; caption: string }) => {
+		if (!currentUserId || photo.submitted) return;
 		const user = getCurrentUser();
 		submitUserPhoto({
 			userId: currentUserId,
 			username: user?.username || currentUserId,
 			displayName: user?.displayName || user?.username || currentUserId,
-			src: preview,
-			caption,
+			src: photo.src,
+			caption: photo.caption,
 		});
-		setPreview(null);
-		setCaption("");
-		if (fileInputRef.current) fileInputRef.current.value = "";
+		markPhotoSubmitted(photo.id);
 	};
 
 	const statusBadge = (status: string) => {
@@ -870,6 +874,20 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 								<p className="text-[10px] text-gray-400 dark:text-slate-500">
 									{new Date(photo.uploadedAt).toLocaleDateString()}
 								</p>
+								{/* Submit to Gallery button */}
+								{!photo.submitted ? (
+									<button
+										type="button"
+										onClick={() => handleSubmitToGallery(photo)}
+										className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-DEFUALT_BLACK px-2 py-1.5 text-BRAND_COLOR text-[10px] font-bold transition hover:opacity-80"
+									>
+										<Globe size={10} /> Submit to Gallery
+									</button>
+								) : (
+									<div className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-gray-100 px-2 py-1.5 text-gray-400 text-[10px] font-bold dark:bg-slate-700 dark:text-slate-500">
+										<CheckCircle2 size={10} /> Submitted
+									</div>
+								)}
 							</div>
 						</div>
 					))}
@@ -880,7 +898,7 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 			<div className="mt-4 flex items-start gap-2 rounded-xl bg-blue-50 p-3 dark:bg-blue-900/10">
 				<Globe size={14} className="mt-0.5 flex-shrink-0 text-blue-500" />
 				<p className="text-blue-700 text-xs dark:text-blue-400">
-					Uploaded photos are submitted for admin review. Once approved, they will appear in the Global Gallery.
+					Upload photos to your personal gallery. Click "Submit to Gallery" on each photo to send it to Admin for review. Once approved, it will appear in the Global Gallery.
 				</p>
 			</div>
 		</Card>

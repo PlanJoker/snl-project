@@ -27,6 +27,7 @@ export interface UserPhoto {
   caption: string;
   uploadedAt: string;
   status: "pending" | "approved" | "rejected";
+  submitted: boolean;
 }
 
 export interface UserState {
@@ -42,7 +43,8 @@ export interface UserState {
   updateGoal: (goalId: string, updates: Partial<StudyGoal>) => void;
   removeGoal: (goalId: string) => void;
   getGoals: () => StudyGoal[];
-  addUserPhoto: (photo: Omit<UserPhoto, "id" | "uploadedAt" | "status">) => void;
+  addUserPhoto: (photo: Omit<UserPhoto, "id" | "uploadedAt" | "status" | "submitted">) => void;
+  markPhotoSubmitted: (photoId: string) => void;
   removeUserPhoto: (photoId: string) => void;
   getUserPhotos: () => UserPhoto[];
   updatePhotoStatus: (photoId: string, status: UserPhoto["status"]) => void;
@@ -178,8 +180,16 @@ export const useUserStore = create<UserState>()(
           id,
           uploadedAt: new Date().toISOString(),
           status: "pending",
+          submitted: false,
         };
         set((s) => ({ userPhotos: [...s.userPhotos, newPhoto] }));
+        return id;
+      },
+
+      markPhotoSubmitted: (photoId) => {
+        set((s) => ({
+          userPhotos: s.userPhotos.map((p) => p.id === photoId ? { ...p, submitted: true } : p),
+        }));
       },
 
       removeUserPhoto: (photoId) => {
