@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
-	BarChart,
-	Bar,
+	LineChart,
+	Line,
 	XAxis,
 	YAxis,
 	CartesianGrid,
 	Tooltip,
+	Legend,
 	ResponsiveContainer,
 	ReferenceLine,
 } from "recharts";
@@ -141,9 +142,11 @@ export default function DashboardPage() {
 	// ── WAM chart data ──
 	const wamChartData = semesters.map((sem) => {
 		const gpa = calculateSemesterGPA(sem.id);
+		const goal = goals.find((g) => g.semesterId === sem.id);
 		return {
 			name: sem.name,
 			WAM: gpa !== null ? Math.round(gpa * 10) / 10 : null,
+			Goal: goal ? goal.targetWAM : null,
 			fill: gradeColor(gpa),
 		};
 	});
@@ -325,77 +328,6 @@ export default function DashboardPage() {
 					)}
 				</Card>
 			</div>
-
-			{/* ── WAM Chart ── */}
-			<Card>
-				<div className="mb-4 flex items-center justify-between">
-					<SectionTitle icon={<TrendingUp size={20} />} title="WAM Progress by Semester" />
-					<Link
-						href="/forall/wam-calculator"
-						className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-1.5 text-gray-600 text-xs font-semibold transition hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR dark:bg-slate-800 dark:text-slate-300"
-					>
-						Open Calculator <ChevronRight size={12} />
-					</Link>
-				</div>
-				{wamChartData.length === 0 ? (
-					<div className="flex h-40 flex-col items-center justify-center rounded-2xl bg-gray-50 dark:bg-slate-800">
-						<p className="text-gray-400 text-sm">No WAM data yet.</p>
-						<Link
-							href="/forall/wam-calculator"
-							className="mt-2 rounded-xl bg-DEFUALT_BLACK px-4 py-2 text-BRAND_COLOR text-xs font-semibold transition hover:opacity-80"
-						>
-							Add your grades →
-						</Link>
-					</div>
-				) : (
-					<div className="h-56">
-						<ResponsiveContainer width="100%" height="100%">
-							<BarChart data={wamChartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-								<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-								<XAxis dataKey="name" tick={{ fontSize: 11 }} />
-								<YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
-								<Tooltip
-									formatter={(v: number) => [`${v}%`, "WAM"]}
-									contentStyle={{
-										borderRadius: "12px",
-										border: "none",
-										boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-									}}
-								/>
-								<ReferenceLine y={80} stroke="#22c55e" strokeDasharray="4 4" label={{ value: "H1 (80)", fontSize: 10, fill: "#22c55e" }} />
-								<ReferenceLine y={70} stroke="#84cc16" strokeDasharray="4 4" label={{ value: "H2A (70)", fontSize: 10, fill: "#84cc16" }} />
-								<Bar dataKey="WAM" radius={[8, 8, 0, 0]} fill="#FFDC73" />
-							</BarChart>
-						</ResponsiveContainer>
-					</div>
-				)}
-
-				{/* Per-semester breakdown */}
-				{semesters.length > 0 && (
-					<div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-						{semesters.map((sem) => {
-							const gpa = calculateSemesterGPA(sem.id);
-							return (
-								<div
-									key={sem.id}
-									className="rounded-xl bg-gray-50 p-3 dark:bg-slate-800"
-								>
-									<p className="truncate font-semibold text-xs dark:text-slate-300">
-										{sem.name}
-									</p>
-									<p
-										className="mt-1 font-black text-2xl"
-										style={{ color: gradeColor(gpa) }}
-									>
-										{gpa !== null ? `${Math.round(gpa)}%` : "—"}
-									</p>
-									<p className="text-gray-400 text-xs">{gradeLabel(gpa)}</p>
-								</div>
-							);
-						})}
-					</div>
-				)}
-			</Card>
 
 			{/* ── Study Goals ── */}
 			{!isAdmin && (
@@ -597,6 +529,97 @@ export default function DashboardPage() {
 				</Card>
 			)}
 
+
+			{/* ── WAM Chart ── */}
+			<Card>
+				<div className="mb-4 flex items-center justify-between">
+					<SectionTitle icon={<TrendingUp size={20} />} title="WAM Progress by Semester" />
+					<Link
+						href="/forall/wam-calculator"
+						className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-1.5 text-gray-600 text-xs font-semibold transition hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR dark:bg-slate-800 dark:text-slate-300"
+					>
+						Open Calculator <ChevronRight size={12} />
+					</Link>
+				</div>
+				{wamChartData.length === 0 ? (
+					<div className="flex h-40 flex-col items-center justify-center rounded-2xl bg-gray-50 dark:bg-slate-800">
+						<p className="text-gray-400 text-sm">No WAM data yet.</p>
+						<Link
+							href="/forall/wam-calculator"
+							className="mt-2 rounded-xl bg-DEFUALT_BLACK px-4 py-2 text-BRAND_COLOR text-xs font-semibold transition hover:opacity-80"
+						>
+							Add your grades →
+						</Link>
+					</div>
+				) : (
+					<div className="h-64">
+						<ResponsiveContainer width="100%" height="100%">
+							<LineChart data={wamChartData} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+								<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+								<XAxis dataKey="name" tick={{ fontSize: 11 }} />
+								<YAxis domain={[50, 100]} tick={{ fontSize: 11 }} />
+								<Tooltip
+									formatter={(v: number, name: string) => [`${v}%`, name]}
+									contentStyle={{
+										borderRadius: "12px",
+										border: "none",
+										boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+									}}
+								/>
+								<Legend wrapperStyle={{ fontSize: 11 }} />
+								<ReferenceLine y={80} stroke="#22c55e" strokeDasharray="4 4" label={{ value: "H1 (80)", fontSize: 10, fill: "#22c55e" }} />
+								<ReferenceLine y={70} stroke="#84cc16" strokeDasharray="4 4" label={{ value: "H2A (70)", fontSize: 10, fill: "#84cc16" }} />
+								<Line
+									type="monotone"
+									dataKey="WAM"
+									stroke="#FFDC73"
+									strokeWidth={2.5}
+									dot={{ fill: "#FFDC73", r: 5 }}
+									activeDot={{ r: 7 }}
+									connectNulls
+								/>
+								<Line
+									type="monotone"
+									dataKey="Goal"
+									stroke="#6366f1"
+									strokeWidth={2}
+									strokeDasharray="5 5"
+									dot={{ fill: "#6366f1", r: 4 }}
+									activeDot={{ r: 6 }}
+									connectNulls
+								/>
+							</LineChart>
+						</ResponsiveContainer>
+					</div>
+				)}
+
+				{/* Per-semester breakdown */}
+				{semesters.length > 0 && (
+					<div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+						{semesters.map((sem) => {
+							const gpa = calculateSemesterGPA(sem.id);
+							return (
+								<div
+									key={sem.id}
+									className="rounded-xl bg-gray-50 p-3 dark:bg-slate-800"
+								>
+									<p className="truncate font-semibold text-xs dark:text-slate-300">
+										{sem.name}
+									</p>
+									<p
+										className="mt-1 font-black text-2xl"
+										style={{ color: gradeColor(gpa) }}
+									>
+										{gpa !== null ? `${Math.round(gpa)}%` : "—"}
+									</p>
+									<p className="text-gray-400 text-xs">{gradeLabel(gpa)}</p>
+								</div>
+							);
+						})}
+					</div>
+				)}
+			</Card>
+
 			{/* ── Weekly Calendar ── */}
 			<Card>
 				<div className="mb-4 flex items-center justify-between">
@@ -706,7 +729,7 @@ export default function DashboardPage() {
 
 // ─── My Photos Section ────────────────────────────────────────────────────────
 function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
-	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser } = useUserStore();
+	const { addUserPhoto, removeUserPhoto, getUserPhotos, getCurrentUser, updatePhotoStatus } = useUserStore();
 	const { submitUserPhoto } = useAdminStore();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [caption, setCaption] = useState("");

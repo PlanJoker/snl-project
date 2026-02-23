@@ -95,12 +95,12 @@ export default function GalleryPage() {
 
 	return (
 	<div
-		className="min-h-screen bg-[#0D0D0D] text-white"
+		className="min-h-screen bg-white dark:bg-[#0f1117] text-gray-900 dark:text-white"
 		onKeyDown={handleKeyDown}
 		tabIndex={-1}
 	>
 		{/* ── Header ── */}
-		<header className="relative overflow-hidden rounded-3xl bg-DEFUALT_BLACK px-6 py-12 md:px-10">
+		<header className="relative overflow-hidden bg-DEFUALT_BLACK px-6 py-12 md:px-16">
 			<div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-BRAND_COLOR opacity-20 blur-3xl" />
 			<div className="relative">
 				<div className="mb-3 flex items-center gap-3">

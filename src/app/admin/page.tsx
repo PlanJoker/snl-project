@@ -1,14 +1,18 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { useAuthStore } from "@stores/authStore";
 import { useAdminStore, type Announcement, type Session } from "@stores/adminStore";
+import { useThemeStore } from "@stores/themeStore";
 import {
 	Megaphone, CalendarDays, Images, Plus, Trash2, Edit3,
 	Pin, PinOff, Eye, EyeOff, LogOut, Shield, X, Check, ChevronRight,
 	Users, CheckCircle2, XCircle, Clock3, Upload,
+	Calculator, Home, Settings, Moon, Sun, Lock,
 } from "lucide-react";
 import Image from "next/image";
+import clsx from "clsx";
 
 type Tab = "announcements" | "sessions" | "gallery" | "user-photos";
 
@@ -25,34 +29,13 @@ export default function AdminPage() {
 		}
 	}, [isLoggedIn, isAdmin, router]);
 
-	if (!isLoggedIn || !isAdmin) return null;
-
+		if (!isLoggedIn || !isAdmin) return null;
 	return (
 		<div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
-			{/* Header */}
-			<div className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-[#1a1d27]/90">
-				<div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-					<div className="flex items-center gap-3">
-						<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-DEFUALT_BLACK">
-							<Shield size={18} className="text-BRAND_COLOR" />
-						</div>
-						<div>
-							<p className="font-bold text-gray-900 text-sm dark:text-white">Admin Dashboard</p>
-							<p className="text-gray-400 text-xs">Saturday Normal Library</p>
-						</div>
-					</div>
-					<button
-						type="button"
-						onClick={() => { logout(); router.push("/"); }}
-						className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-gray-600 text-sm transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-slate-700 dark:text-slate-400"
-					>
-						<LogOut size={15} />
-						<span className="hidden sm:inline">Logout</span>
-					</button>
-				</div>
-			</div>
-
-			<div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+			<AdminSideNav />
+			<AdminMobileTabBar />
+			<div className="pb-24 md:pb-0 md:ml-64">
+			<div className="px-4 py-6 sm:px-6 sm:py-8">
 				{/* Tab nav */}
 				<div className="mb-6 flex gap-1.5 rounded-2xl bg-white p-1.5 shadow-sm dark:bg-[#1e2130] sm:mb-8 sm:gap-2">
 					{([
@@ -83,10 +66,11 @@ export default function AdminPage() {
 					))}
 				</div>
 
-				{tab === "announcements" && <AnnouncementsTab />}
-				{tab === "sessions" && <SessionsTab />}
-				{tab === "gallery" && <GalleryTab />}
-				{tab === "user-photos" && <UserPhotosTab />}
+			{tab === "announcements" && <AnnouncementsTab />}
+			{tab === "sessions" && <SessionsTab />}
+			{tab === "gallery" && <GalleryTab />}
+			{tab === "user-photos" && <UserPhotosTab />}
+			</div>
 			</div>
 		</div>
 	);
@@ -635,4 +619,79 @@ function UserPhotosTab() {
 			)}
 		</div>
 	);
+}
+
+// ─── Admin Side Navigation ────────────────────────────────────────────────────
+function AdminSideNav() {
+const pathname = usePathname();
+const { isLoggedIn, logout } = useAuthStore();
+const router = useRouter();
+
+const navItem = (href: string, icon: React.ReactNode, label: string) => {
+const active = pathname === href || pathname.startsWith(href + "/");
+return (
+<Link href={href} className={clsx("flex h-9 w-full items-center gap-2 rounded-xl px-2 py-5 transition", {
+"bg-DEFUALT_BLACK text-BRAND_COLOR shadow-sm shadow-yellow-500/50": active,
+"hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR hover:shadow-sm hover:shadow-yellow-500/50 dark:text-slate-300 dark:hover:text-BRAND_COLOR": !active
+})}>
+{icon}
+{label}
+</Link>
+);
+};
+
+return (
+<div className="sidebar-nav fixed top-7 bottom-7 left-4 z-50 hidden w-56 flex-col items-center gap-1 rounded-[36px] bg-DEFUALT_WHITE px-3 py-4 font-semibold shadow-sm dark:bg-[#1e2130] dark:shadow-black/40 md:flex">
+<Link href="/" className="mb-16 mt-[15px] flex w-full items-center">
+<Image src="/snlnewlogo.png" alt="SNL Logo" width={72} height={72} className="object-contain" />
+</Link>
+<Link href={isLoggedIn ? "/user/dashboard" : "/auth"} className={clsx("flex h-9 w-full items-center gap-2 rounded-xl px-2 py-5 transition", {
+"bg-DEFUALT_BLACK text-BRAND_COLOR shadow-sm shadow-yellow-500/50": pathname === "/user/dashboard",
+"hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR hover:shadow-sm hover:shadow-yellow-500/50 dark:text-slate-300 dark:hover:text-BRAND_COLOR": pathname !== "/user/dashboard"
+})}>
+<Home size={24} />
+Home
+</Link>
+{navItem("/forall/wam-calculator", <Calculator size={24} />, "Calculator")}
+{navItem("/forall/calendar", <CalendarDays size={24} />, "Calendar")}
+{navItem("/gallery", <Images size={24} />, "Gallery")}
+{navItem("/admin", <span className="text-BRAND_COLOR text-xs font-black">ADM</span>, "Admin")}
+<div className="flex-1" />
+<button
+type="button"
+onClick={() => { logout(); router.push("/"); }}
+className="flex h-9 w-full items-center gap-2 rounded-xl px-2 py-5 transition hover:bg-red-50 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400"
+>
+<LogOut size={24} />
+Logout
+</button>
+</div>
+);
+}
+
+// ─── Admin Mobile Tab Bar ─────────────────────────────────────────────────────
+function AdminMobileTabBar() {
+const pathname = usePathname();
+const { isLoggedIn, logout } = useAuthStore();
+const router = useRouter();
+
+const tabItem = (href: string, icon: React.ReactNode, label: string) => {
+const active = pathname === href || pathname.startsWith(href + "/");
+return (
+<Link href={href} className={clsx("flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold transition", active ? "text-BRAND_COLOR" : "text-gray-400 dark:text-slate-500")}>
+{icon}
+{label}
+</Link>
+);
+};
+
+return (
+<nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center border-t border-gray-100 bg-white px-2 shadow-lg dark:border-slate-700 dark:bg-[#1e2130] md:hidden" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+{tabItem("/user/dashboard", <Home size={20} />, "Home")}
+{tabItem("/forall/wam-calculator", <Calculator size={20} />, "Calc")}
+{tabItem("/forall/calendar", <CalendarDays size={20} />, "Calendar")}
+{tabItem("/gallery", <Images size={20} />, "Gallery")}
+{tabItem("/admin", <span className="text-[8px] font-black text-BRAND_COLOR">ADM</span>, "Admin")}
+</nav>
+);
 }

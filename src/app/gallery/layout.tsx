@@ -23,7 +23,7 @@ export default function GalleryLayout({ children }: { children: React.ReactNode 
 	return (
 		<div className="h-full w-full">
 			<LeftNav className="w-56 hidden md:flex" />
-			<main className="pb-24 md:pb-0 dark:text-slate-100">
+			<main className="pb-24 md:pb-0 md:ml-64 dark:text-slate-100">
 				{children}
 			</main>
 			<MobileTabBar />
