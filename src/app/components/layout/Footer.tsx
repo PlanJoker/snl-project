@@ -89,10 +89,10 @@ const Footer: React.FC = () => {
 						{/* Contact column */}
 						<div className="flex flex-col gap-4 lg:col-span-1">
 							<h3 className="font-bold text-BRAND_COLOR text-sm uppercase tracking-widest">Contact Us</h3>
-							<ul className="flex flex-col gap-3">
-								<li>
-									<a
-										href="mailto:playground.space93@gmail.com"
+						<ul className="flex flex-col gap-5">
+							<li>
+								<a
+									href="mailto:playground.space93@gmail.com"
 										className="flex items-start gap-3 text-gray-300 text-sm transition hover:text-BRAND_COLOR"
 									>
 										<Mail size={16} className="mt-0.5 flex-shrink-0 text-BRAND_COLOR" />

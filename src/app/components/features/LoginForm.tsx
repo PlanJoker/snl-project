@@ -26,8 +26,11 @@ export default function LoginForm() {
 		const isAdmin = id === ADMIN_ID && pw === ADMIN_PW;
 		const isLegacy = id === LEGACY_ID && pw === LEGACY_PW;
 
-		if (isAdmin || isLegacy) {
-			login();
+		if (isAdmin) {
+			login(true); // admin = true
+			router.push("/auth");
+		} else if (isLegacy) {
+			login(false);
 			router.push("/auth");
 		} else {
 			setError("Incorrect ID or password. Please try again.");

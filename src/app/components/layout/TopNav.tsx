@@ -19,7 +19,7 @@ export default function TopNav() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 	const [isMenuClicked, setIsMenuClicked] = useState(false);
 
-	const { isLoggedIn, logout } = useAuthStore(); // Access the login state
+	const { isLoggedIn, isAdmin, logout } = useAuthStore(); // Access the login state
 	const router = useRouter(); // Initialize router
 
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -88,6 +88,15 @@ export default function TopNav() {
 					{isMenuClicked ? <MenuButtonGroups /> : null}
 				</button>
 
+				{/* Admin Dashboard Button (only when admin is logged in) */}
+				{isLoggedIn && isAdmin && (
+					<Link
+						href="/admin"
+						className="rounded-2xl bg-BRAND_COLOR px-4 py-2 font-semibold text-DEFUALT_BLACK transition-opacity hover:opacity-80"
+					>
+						Admin
+					</Link>
+				)}
 				{/* Log In/Logout Button */}
 				<button
 					onClick={isLoggedIn ? handleLogout : () => setIsLoginModalOpen(true)}
