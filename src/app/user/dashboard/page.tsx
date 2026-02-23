@@ -743,8 +743,14 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 	const [caption, setCaption] = useState("");
 	const [preview, setPreview] = useState<string | null>(null);
 	const [lightbox, setLightbox] = useState<string | null>(null);
+	// Local set of submitted photo IDs for instant UI feedback
+	const [submittedIds, setSubmittedIds] = useState<Set<string>>(() => {
+		const uid = currentUserId ?? storeUserId;
+		const already = userPhotos.filter((p) => p.userId === uid && p.submitted).map((p) => p.id);
+		return new Set(already);
+	});
 
-	// Directly subscribe to userPhotos for reactive re-render on submitted state change
+	// Directly subscribe to userPhotos for reactive re-render
 	const myPhotos = userPhotos.filter((p) => p.userId === (currentUserId ?? storeUserId));
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -768,7 +774,9 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 	};
 
 	const handleSubmitToGallery = (photo: { id: string; submitted?: boolean; src: string; caption: string }) => {
-		if (!currentUserId || photo.submitted) return;
+		if (!currentUserId || submittedIds.has(photo.id)) return;
+		// Instantly update local UI state
+		setSubmittedIds((prev) => new Set([...prev, photo.id]));
 		const user = getCurrentUser();
 		submitUserPhoto({
 			userId: currentUserId,
@@ -884,7 +892,7 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 									{new Date(photo.uploadedAt).toLocaleDateString()}
 								</p>
 					{/* Submit to Gallery button */}
-					{!photo.submitted ? (
+					{!submittedIds.has(photo.id) ? (
 						<button
 							type="button"
 							onClick={() => handleSubmitToGallery(photo)}
