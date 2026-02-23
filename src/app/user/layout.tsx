@@ -18,10 +18,12 @@ import {
 } from "lucide-react";
 import { useThemeStore } from "@stores/themeStore";
 import { useAuthStore } from "@stores/authStore";
+import SeedTesterData from "@components/features/SeedTesterData";
 
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="h-full w-full">
+			<SeedTesterData />
 			<LeftNav className="w-56 hidden md:flex" />
 			<main className="pb-24 px-4 pt-4 md:pb-8 md:my-8 md:mr-8 md:ml-64 md:px-0 md:pt-0 dark:text-slate-100">
 				{children}
