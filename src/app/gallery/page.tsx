@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
-import Footer from "@components/layout/Footer";
+
 
 // ─── All 37 gallery photos ────────────────────────────────────────────────────
 const GALLERY_PHOTOS = [
@@ -77,49 +77,37 @@ export default function GalleryPage() {
 	);
 
 	return (
-		<div
-			className="min-h-screen bg-[#0D0D0D] text-white"
-			onKeyDown={handleKeyDown}
-			tabIndex={-1}
-		>
-			{/* ── Header ── */}
-			<header className="relative overflow-hidden bg-DEFUALT_BLACK px-6 py-20 md:px-12 lg:px-24">
-				{/* Decorative yellow blob */}
-				<div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-BRAND_COLOR opacity-20 blur-3xl" />
-				<div className="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-BRAND_COLOR opacity-10 blur-3xl" />
-
-				<div className="relative mx-auto max-w-6xl">
-					<Link
-						href="/"
-						className="mb-8 inline-flex items-center gap-2 text-gray-400 text-sm transition hover:text-BRAND_COLOR"
-					>
-						← Back to Home
-					</Link>
-
-					<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-						<div>
-							<div className="mb-3 flex items-center gap-3">
-								<Images size={28} className="text-BRAND_COLOR" />
-								<span className="font-semibold text-BRAND_COLOR text-sm uppercase tracking-widest">
-									Saturday Normal Library
-								</span>
-							</div>
-							<h1 className="font-black text-5xl leading-tight md:text-7xl">
-								Our <span className="text-BRAND_COLOR">Moments</span>
-							</h1>
-							<p className="mt-4 max-w-xl text-gray-400 text-lg">
-								Every Saturday, we study, connect, and grow together. Here are the memories we&apos;ve made along the way.
-							</p>
-						</div>
-						<div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-sm">
-							<span className="font-black text-4xl text-BRAND_COLOR">{GALLERY_PHOTOS.length}</span>
-							<span className="text-gray-400 text-sm leading-tight">
-								photos<br />captured
-							</span>
-						</div>
+	<div
+		className="min-h-screen bg-[#0D0D0D] text-white"
+		onKeyDown={handleKeyDown}
+		tabIndex={-1}
+	>
+		{/* ── Header ── */}
+		<header className="relative overflow-hidden rounded-3xl bg-DEFUALT_BLACK px-6 py-12 md:px-10">
+			<div className="pointer-events-none absolute -top-16 -right-16 h-64 w-64 rounded-full bg-BRAND_COLOR opacity-20 blur-3xl" />
+			<div className="relative">
+				<div className="mb-3 flex items-center gap-3">
+					<Images size={24} className="text-BRAND_COLOR" />
+					<span className="font-semibold text-BRAND_COLOR text-xs uppercase tracking-widest">
+						Saturday Normal Library
+					</span>
+				</div>
+				<div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+					<div>
+						<h1 className="font-black text-4xl leading-tight md:text-5xl">
+							Our <span className="text-BRAND_COLOR">Moments</span>
+						</h1>
+						<p className="mt-3 max-w-xl text-gray-400">
+							Every Saturday, we study, connect, and grow together.
+						</p>
+					</div>
+					<div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-sm">
+						<span className="font-black text-3xl text-BRAND_COLOR">{GALLERY_PHOTOS.length}</span>
+						<span className="text-gray-400 text-sm leading-tight">photos<br />captured</span>
 					</div>
 				</div>
-			</header>
+			</div>
+		</header>
 
 			{/* ── Masonry Grid ── */}
 			<main className="mx-auto max-w-7xl px-4 py-12 md:px-8">
@@ -280,7 +268,6 @@ export default function GalleryPage() {
 				</div>
 			</section>
 
-			<Footer />
-		</div>
+	</div>
 	);
 }

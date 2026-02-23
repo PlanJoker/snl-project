@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import clsx from "clsx";
 import {
 	Calculator,
@@ -13,8 +13,10 @@ import {
 	Sun,
 	Moon,
 	X,
+	Lock,
 } from "lucide-react";
 import { useThemeStore } from "@stores/themeStore";
+import { useAuthStore } from "@stores/authStore";
 
 export default function PublicDashboardLayout({
 	children,
@@ -30,10 +32,15 @@ export default function PublicDashboardLayout({
 function LeftNav({ className }: { className?: string }) {
 	const pathname = usePathname();
 	const { theme, toggleTheme } = useThemeStore();
+	const { isLoggedIn, isAdmin } = useAuthStore();
 	const [settingsOpen, setSettingsOpen] = useState(false);
 
+	// Home destination: dashboard if logged in, else auth
+	const homeDest = isLoggedIn ? "/user/dashboard" : "/auth";
+	const homeActive = pathname === "/user/dashboard";
+
 	const navItem = (href: string, icon: React.ReactNode, label: string) => {
-		const active = pathname === href;
+		const active = pathname === href || pathname.startsWith(href + "/");
 		return (
 			<Link
 				href={href}
@@ -60,7 +67,7 @@ function LeftNav({ className }: { className?: string }) {
 					className,
 				)}
 			>
-				{/* Logo — 5px lower via mt-[5px] */}
+				{/* Logo */}
 				<Link href="/" className="mb-16 mt-[15px] flex w-full items-center">
 					<Image
 						src="/snlnewlogo.png"
@@ -71,15 +78,36 @@ function LeftNav({ className }: { className?: string }) {
 					/>
 				</Link>
 
-				{/* Home (non-clickable placeholder) */}
-				<div className="flex h-9 w-full cursor-default items-center gap-2 px-2 py-5 text-gray-300 dark:text-slate-600 transition">
-					<Home size={24} />
+				{/* Home — active when logged in and on dashboard */}
+				<Link
+					href={homeDest}
+					className={clsx(
+						"flex h-9 w-full items-center gap-2 rounded-xl px-2 py-5 transition",
+						{
+							"bg-DEFUALT_BLACK text-BRAND_COLOR shadow-sm shadow-yellow-500/50": homeActive,
+							"hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR hover:shadow-sm hover:shadow-yellow-500/50 dark:text-slate-300 dark:hover:text-BRAND_COLOR":
+								!homeActive && isLoggedIn,
+							"cursor-pointer text-gray-300 hover:bg-DEFUALT_BLACK hover:text-BRAND_COLOR dark:text-slate-600 dark:hover:text-BRAND_COLOR":
+								!isLoggedIn,
+						},
+					)}
+					title={isLoggedIn ? "Go to Dashboard" : "Log in to access Dashboard"}
+				>
+					{isLoggedIn ? <Home size={24} /> : <Lock size={24} />}
 					Home
-				</div>
+					{!isLoggedIn && (
+						<span className="ml-auto rounded-full bg-gray-100 px-1.5 py-0.5 text-[9px] text-gray-400 dark:bg-slate-700 dark:text-slate-500">
+							Login
+						</span>
+					)}
+				</Link>
 
 				{navItem("/forall/wam-calculator", <Calculator size={24} />, "Calculator")}
 				{navItem("/forall/calendar", <CalendarDays size={24} />, "Calendar")}
 				{navItem("/gallery", <Images size={24} />, "Gallery")}
+
+				{/* Admin shortcut */}
+				{isAdmin && navItem("/admin", <span className="text-BRAND_COLOR text-xs font-black">ADM</span>, "Admin")}
 
 				{/* Spacer */}
 				<div className="flex-1" />
@@ -176,6 +204,16 @@ function LeftNav({ className }: { className?: string }) {
 								Dark
 							</button>
 						</div>
+
+						{/* Account info */}
+						{isLoggedIn && (
+							<div className="mt-4 rounded-2xl border border-gray-100 bg-gray-50 px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
+								<p className="font-semibold text-sm mb-1">Account</p>
+								<p className="text-gray-400 text-xs">
+									{isAdmin ? "Logged in as Admin" : "Logged in as User"}
+								</p>
+							</div>
+						)}
 					</div>
 				</div>
 			)}
