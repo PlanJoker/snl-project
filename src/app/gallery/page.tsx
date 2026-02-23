@@ -52,8 +52,13 @@ export default function GalleryPage() {
 	const { userPhotos } = useUserStore();
 	const { galleryPhotos } = useAdminStore();
 
+	// Admin-uploaded photos (source=admin, visible=true) - added to gallery directly
+	const adminUploadedPhotos = galleryPhotos
+		.filter((p) => p.source === "admin" && p.visible)
+		.map((p) => ({ src: p.src, alt: p.caption || "SNL Photo", isUserPhoto: false }));
+
 	// Approved member photos from adminStore (source=user, visible=true)
-	const approvedFromAdmin = galleryPhotos
+	const approvedMemberPhotos = galleryPhotos
 		.filter((p) => p.source === "user" && p.visible)
 		.map((p) => ({ src: p.src, alt: p.caption || "Member photo", isUserPhoto: true }));
 
@@ -62,11 +67,12 @@ export default function GalleryPage() {
 		.filter((p) => p.status === "approved")
 		.map((p) => ({ src: p.src, alt: p.caption || "Member photo", isUserPhoto: true }));
 
-	const approvedUserPhotos = approvedFromAdmin.length > 0 ? approvedFromAdmin : approvedFromUser;
+	const memberPhotos = approvedMemberPhotos.length > 0 ? approvedMemberPhotos : approvedFromUser;
 
 	const ALL_PHOTOS = [
 		...GALLERY_PHOTOS.map((p) => ({ ...p, isUserPhoto: false })),
-		...approvedUserPhotos,
+		...adminUploadedPhotos,
+		...memberPhotos,
 	];
 
 	const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
