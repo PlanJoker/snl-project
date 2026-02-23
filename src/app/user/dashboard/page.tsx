@@ -883,20 +883,20 @@ function MyPhotosSection({ currentUserId }: { currentUserId: string | null }) {
 								<p className="text-[10px] text-gray-400 dark:text-slate-500">
 									{new Date(photo.uploadedAt).toLocaleDateString()}
 								</p>
-								{/* Submit to Gallery button */}
-								{!photo.submitted ? (
-									<button
-										type="button"
-										onClick={() => handleSubmitToGallery(photo)}
-										className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-DEFUALT_BLACK px-2 py-1.5 text-BRAND_COLOR text-[10px] font-bold transition hover:opacity-80"
-									>
-										<Globe size={10} /> Submit to Gallery
-									</button>
-								) : (
-									<div className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-gray-100 px-2 py-1.5 text-gray-400 text-[10px] font-bold dark:bg-slate-700 dark:text-slate-500">
-										<CheckCircle2 size={10} /> Submitted
-									</div>
-								)}
+					{/* Submit to Gallery button */}
+					{!photo.submitted ? (
+						<button
+							type="button"
+							onClick={() => handleSubmitToGallery(photo)}
+							className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-DEFUALT_BLACK px-2 py-1.5 text-BRAND_COLOR text-[10px] font-bold transition hover:opacity-80"
+						>
+							<Globe size={10} /> Submit to Gallery
+						</button>
+					) : (
+						<div className="mt-2 w-full flex items-center justify-center gap-1 rounded-lg bg-green-500 px-2 py-1.5 text-white text-[10px] font-bold cursor-not-allowed">
+							<CheckCircle2 size={10} /> Submitted!
+						</div>
+					)}
 							</div>
 						</div>
 					))}
