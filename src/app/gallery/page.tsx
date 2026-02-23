@@ -157,10 +157,10 @@ export default function GalleryPage() {
 										View
 									</span>
 								</div>
-								{/* Index badge */}
-								<div className="absolute top-2 left-2 rounded-full bg-black/50 px-2 py-0.5 font-mono text-white text-xs backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-									{idx + 1} / {GALLERY_PHOTOS.length}
-								</div>
+					{/* Index badge */}
+					<div className="absolute top-2 left-2 rounded-full bg-black/50 px-2 py-0.5 font-mono text-white text-xs backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+						{idx + 1} / {ALL_PHOTOS.length}
+					</div>
 							</button>
 						</motion.div>
 					))}
@@ -189,10 +189,10 @@ export default function GalleryPage() {
 							<X size={20} />
 						</button>
 
-						{/* Counter */}
-						<div className="absolute top-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 font-mono text-white text-sm backdrop-blur-sm">
-							{lightboxIndex + 1} / {GALLERY_PHOTOS.length}
-						</div>
+					{/* Counter */}
+					<div className="absolute top-4 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-1.5 font-mono text-white text-sm backdrop-blur-sm">
+						{lightboxIndex + 1} / {ALL_PHOTOS.length}
+					</div>
 
 						{/* Prev */}
 						<button
@@ -214,14 +214,14 @@ export default function GalleryPage() {
 							className="relative max-h-[85vh] max-w-[90vw]"
 							onClick={(e) => e.stopPropagation()}
 						>
-							<Image
-								src={GALLERY_PHOTOS[lightboxIndex].src}
-								alt={GALLERY_PHOTOS[lightboxIndex].alt}
-								width={1200}
-								height={900}
-								className="max-h-[85vh] w-auto rounded-2xl object-contain shadow-2xl"
-								priority
-							/>
+					<Image
+						src={ALL_PHOTOS[lightboxIndex].src}
+						alt={ALL_PHOTOS[lightboxIndex].alt}
+						width={1200}
+						height={900}
+						className="max-h-[85vh] w-auto rounded-2xl object-contain shadow-2xl"
+						priority
+					/>
 						</motion.div>
 
 						{/* Next */}
@@ -234,29 +234,29 @@ export default function GalleryPage() {
 							<ChevronRight size={24} />
 						</button>
 
-						{/* Thumbnail strip */}
-						<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 overflow-x-auto px-4 max-w-[90vw]">
-							{GALLERY_PHOTOS.map((p, i) => (
-								<button
-									key={p.src}
-									type="button"
-									onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
-									className={`relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg transition-all ${
-										i === lightboxIndex
-											? "ring-2 ring-BRAND_COLOR ring-offset-1 ring-offset-black opacity-100 scale-110"
-											: "opacity-40 hover:opacity-70"
-									}`}
-								>
-									<Image
-										src={p.src}
-										alt={p.alt}
-										fill
-										className="object-cover"
-										sizes="48px"
-									/>
-								</button>
-							))}
-						</div>
+					{/* Thumbnail strip */}
+					<div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 overflow-x-auto px-4 max-w-[90vw]">
+						{ALL_PHOTOS.map((p, i) => (
+							<button
+								key={`${p.src}-${i}`}
+								type="button"
+								onClick={(e) => { e.stopPropagation(); setLightboxIndex(i); }}
+								className={`relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg transition-all ${
+									i === lightboxIndex
+										? "ring-2 ring-BRAND_COLOR ring-offset-1 ring-offset-black opacity-100 scale-110"
+										: "opacity-40 hover:opacity-70"
+								}`}
+							>
+								<Image
+									src={p.src}
+									alt={p.alt}
+									fill
+									className="object-cover"
+									sizes="48px"
+								/>
+							</button>
+						))}
+					</div>
 					</motion.div>
 				)}
 			</AnimatePresence>
