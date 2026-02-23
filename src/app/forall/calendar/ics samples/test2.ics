@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+    VERSION:2.0
+    CALSCALE:GREGORIAN
+    PRODID:iCalendar-Ruby
+
+    BEGIN:VEVENT
+        DESCRIPTION: 
+        DTEND:20250114T014000Z
+        DTSTAMP:20250113T025847
+        DTSTART:20250114T010000Z
+        LOCATION: 243 Troube St\, Melbourne\, VIC\, 3000\, Australia
+        SEQUENCE:0
+        SUMMARY:Personal Banking / A- Z Review®
+        UID:bookingbug_ANZ_13342323
+    END:VEVENT
+END:VCALENDAR
