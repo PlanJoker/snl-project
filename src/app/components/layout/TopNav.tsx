@@ -139,6 +139,13 @@ function MenuButtonGroups() {
 			>
 				Calendar
 			</LinkButton>
+			<LinkButton
+				id="gallery"
+				className="relative left-[28px]"
+				href="/gallery"
+			>
+				SNL Gallery
+			</LinkButton>
 		</div>
 	);
 }

@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import TestimonialCarousel from "@components/TestimonialCarousel";
 import Footer from "@components/layout/Footer";
+import AutoSlider from "@components/AutoSlider";
 import { Rock_Salt } from "next/font/google";
 import { BookOpen, Calendar, Calculator, Users } from "lucide-react";
 
@@ -13,6 +14,20 @@ const rockSalt = Rock_Salt({
 	style: "normal",
 	subsets: ["latin"],
 });
+
+// 10 photos for the landing page auto-slider
+const SLIDE_PHOTOS = [
+	{ src: "/gallery/snl-image-1.png",  alt: "SNL Study Session 1" },
+	{ src: "/gallery/snl-image-2.jpg",  alt: "SNL Study Session 2" },
+	{ src: "/gallery/snl-image-3.jpg",  alt: "SNL Study Session 3" },
+	{ src: "/gallery/snl-image-4.jpg",  alt: "SNL Study Session 4" },
+	{ src: "/gallery/snl-image-6.jpg",  alt: "SNL Study Session 6" },
+	{ src: "/gallery/snl-image-7.jpg",  alt: "SNL Study Session 7" },
+	{ src: "/gallery/snl-image-10.jpg", alt: "SNL Study Session 10" },
+	{ src: "/gallery/snl-image-15.jpg", alt: "SNL Study Session 15" },
+	{ src: "/gallery/snl-image-20.jpg", alt: "SNL Study Session 20" },
+	{ src: "/gallery/snl-image-25.jpg", alt: "SNL Study Session 25" },
+];
 
 function AnimatedSection({ children, className }: { children: React.ReactNode; className?: string }) {
 	const ref = useRef(null);
@@ -91,8 +106,21 @@ export default function Home() {
 						</div>
 					</AnimatedSection>
 				</div>
-	
-				<AnimatedSection className="mt-8 w-full max-w-6xl mx-auto">
+
+				{/* Auto Photo Slider */}
+				<div className="mt-14 w-full max-w-6xl mx-auto">
+					<AnimatedSection>
+						<div className="mb-4 flex items-center justify-between">
+							<p className="font-semibold text-black/70 text-sm uppercase tracking-widest">Our Community Moments</p>
+							<Link href="/gallery" className="font-semibold text-DEFUALT_BLACK text-sm underline underline-offset-4 hover:opacity-70 transition">
+								View all photos →
+							</Link>
+						</div>
+						<AutoSlider items={SLIDE_PHOTOS} interval={3500} />
+					</AnimatedSection>
+				</div>
+
+				<AnimatedSection className="mt-12 w-full max-w-6xl mx-auto">
 					<h2 className="font-bold text-5xl text-black md:text-7xl">fight procrastination</h2>
 				</AnimatedSection>
 			</section>
