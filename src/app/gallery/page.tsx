@@ -112,7 +112,7 @@ export default function GalleryPage() {
 				<div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
 					<div>
 						<h1 className="font-black text-4xl leading-tight md:text-5xl">
-							Our <span className="text-BRAND_COLOR">Moments</span>
+							<span className="text-BRAND_COLOR">Our</span> <span className="text-BRAND_COLOR">Moments</span>
 						</h1>
 						<p className="mt-3 max-w-xl text-gray-400">
 							Every Saturday, we study, connect, and grow together.

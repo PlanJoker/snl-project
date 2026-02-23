@@ -48,7 +48,7 @@ export default function TopNav() {
 	const pathname = usePathname();
 
 	// Don't render on specific pages
-	if (pathname.startsWith("/forall") || pathname.startsWith("/user")) {
+	if (pathname.startsWith("/forall") || pathname.startsWith("/user") || pathname.startsWith("/gallery") || pathname.startsWith("/admin")) {
 		return null;
 	}
 
